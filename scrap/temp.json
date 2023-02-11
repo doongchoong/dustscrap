@@ -1,0 +1,10 @@
+
+{
+	"from_url" : "#2022/12/01/0000Z",
+	"to_url" : "#2023/02/09/0000Z",
+	"mode_url" : "wind/surface/level/anim=off/overlay=temp",
+	"projection_url" : "orthographic=180.00,90.00,270",
+	"wait_seconds": 1,
+	"frames_path" : "../frm_temp",
+	"time_stamp": true
+}
