@@ -4,6 +4,8 @@
 미세먼지 확산 영상을 제작하는 프로그램 입니다.
 Go 언어로 작성되었습니다.
 
+![cosc_gif](https://github.com/doongchoong/dustscrap/blob/main/dust.gif?raw=true)
+
 ## Scrap
 
 json파일 형태의 컨픽파일을 설정한 뒤 
