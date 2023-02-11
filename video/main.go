@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -141,16 +142,35 @@ func RollbackImageSequence(path string) error {
 	return nil
 }
 
-func GenVideoByFFMPEG(binpath, imgpath string, quality, scale int) error {
-	cmd := exec.Command(
-		binpath,
-		"-f", "image2",
-		"-r", "24",
-		"-i", filepath.Join(imgpath, file_fmt),
-		"-q:v", fmt.Sprintf("%d", quality), //  1 (lossless), 4 (quard
-		//"-vf", fmt.Sprintf("scale=-1:%d", scale),
-		"out.avi",
-	)
+func GenVideoByFFMPEG(outputf, binpath, imgpath string, quality, scale int) error {
+
+	var cmd *exec.Cmd
+
+	ext := filepath.Ext(outputf)
+
+	if ext == ".avi" {
+		cmd = exec.Command(
+			binpath,
+			"-f", "image2",
+			"-r", "24",
+			"-i", filepath.Join(imgpath, file_fmt),
+			"-q:v", fmt.Sprintf("%d", quality), //  1 (lossless), 4 (quard
+			//"-vf", fmt.Sprintf("scale=-1:%d", scale),
+			outputf,
+		)
+	} else if ext == ".gif" {
+		cmd = exec.Command(
+			binpath,
+			"-f", "image2",
+			"-r", "24",
+			"-i", filepath.Join(imgpath, file_fmt),
+			outputf,
+		)
+	} else {
+		log.Println("!!! output file avi or gif ")
+		return nil
+	}
+
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
@@ -168,6 +188,7 @@ func main() {
 	binpath := flag.String("binpath", "tools/ffmpeg", "ffmpeg path")
 	quality := flag.Int("quality", 4, "1:lossless")
 	scale := flag.Int("scale", 720, "height scale")
+	outputf := flag.String("out", "out.avi", "output file (avi or gif)")
 	start := flag.String("start", "", "start image file ")
 	end := flag.String("end", "", "end image file")
 
@@ -182,7 +203,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	err = GenVideoByFFMPEG(*binpath, *imgpath, *quality, *scale)
+	err = GenVideoByFFMPEG(*outputf, *binpath, *imgpath, *quality, *scale)
 	if err != nil {
 		panic(err)
 	}
